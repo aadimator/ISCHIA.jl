@@ -1,0 +1,12 @@
+name = "ISCHIA"
+uuid = "74e64ba0-f5e0-4118-82b9-3e045477e209"
+authors = ["Aadam <aadimator@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+Muon = "446846d7-b4ce-489d-bf74-72da18fe3629"
+RData = "df47a6cb-8c03-5eed-afd8-b6050d6c41da"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+SeuratRDS = "dc2ff7d6-b19f-434a-a8eb-f50e20111c56"
