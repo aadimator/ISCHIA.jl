@@ -17,9 +17,9 @@ export calculate_cooccurrence_stats,
     CooccurOutput,
     summarize_cooccur
 
-include("utils.jl")
 include("cooccur.jl")
 include("lr_enrichment.jl")
+include("utils.jl")
 
 
 end # module ISCHIA

@@ -66,25 +66,25 @@ A summary of the co-occurrence analysis results as a dictionary.
 ```julia
 summary = summarize_cooccur(cooccur_object)
 """
-function summarize_cooccur(cooccur_output::CooccurOutput)
+function summarize_cooccur(cooccur::CooccurOutput)
     # Print basic analysis information
-    if hasproperty(cooccur_output, :omitted)
-        println("Of $(cooccur_output.pot_pairs) species pair combinations, $(cooccur_output.omitted) pairs ($(round(cooccur_output.omitted / cooccur_output.pot_pairs * 100, digits=2))%) were removed from the analysis because expected co-occurrence was < 1 and")
+    if hasproperty(cooccur, :omitted)
+        println("Of $(cooccur.pot_pairs) species pair combinations, $(cooccur.omitted) pairs ($(round(cooccur.omitted / cooccur.pot_pairs * 100, digits=2))%) were removed from the analysis because expected co-occurrence was < 1 and")
     end
 
-    println("$(cooccur_output.pairs) pairs were analyzed")
+    println("$(cooccur.pairs) pairs were analyzed")
 
     println("\nCooccurrence Summary:\n")
 
     # Create a dictionary for summarizing co-occurrence statistics
     cooccur_summary = Dict(
-        "Species" => round(Int, cooccur_output.species),
-        "Sites" => round(Int, mean(cooccur_output.sites)),
-        "Positive" => round(Int, cooccur_output.positive),
-        "Negative" => round(Int, cooccur_output.negative),
-        "Random" => round(Int, cooccur_output.random),
-        "Unclassifiable" => round(Int, cooccur_output.unclassifiable),
-        "Non-random (%)" => round(cooccur_output.percent_sig, digits=1)
+        "Species" => round(Int, cooccur.species),
+        "Sites" => round(Int, mean(cooccur.sites)),
+        "Positive" => round(Int, cooccur.positive),
+        "Negative" => round(Int, cooccur.negative),
+        "Random" => round(Int, cooccur.random),
+        "Unclassifiable" => round(Int, cooccur.unclassifiable),
+        "Non-random (%)" => round(cooccur.percent_sig, digits=1)
     )
 
     # Print the co-occurrence summary
