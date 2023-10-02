@@ -14,7 +14,8 @@ export calculate_cooccurrence_stats,
     enriched_LRs,
     calculate_cooccurrence_stats_refactored,
     enriched_LRs_refactored,
-    CooccurOutput
+    CooccurOutput,
+    summarize_cooccur
 
 include("utils.jl")
 include("cooccur.jl")
