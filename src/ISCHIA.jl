@@ -3,8 +3,6 @@ module ISCHIA
 using Muon
 using RData
 using Rmath
-# using RCall
-using Random
 using DataFrames
 using Statistics
 using Combinatorics
