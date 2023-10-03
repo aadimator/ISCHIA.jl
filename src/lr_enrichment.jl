@@ -18,7 +18,7 @@ A dictionary containing:
 - `"cooccurrence_table"`: Co-occurrence analysis results.
 
 """
-function enriched_LRs(
+function find_enriched_LR_pairs(
     adata::AnnData, COI::Vector{String}, Condition::Vector{String},
     LR_list::Vector{String}, LR_pairs::Vector{String},
     exp_th::Real, corr_th::Real)
@@ -53,7 +53,7 @@ function enriched_LRs(
     coocur_COI_exp = DataFrame(Matrix(transpose(coocur_COI.layers["binary"])), common_spots)
 
     println("Cooccurrence calculation starts...")
-    cooccur_COI_res = calculate_cooccurrence_stats_refactored(Matrix(coocur_COI_exp), coocur_COI.var.name; spp_names=true)
+    cooccur_COI_res = calculate_cooccurrence_stats(Matrix(coocur_COI_exp), coocur_COI.var.name; spp_names=true)
     println("Cooccurrence calculation ended")
 
     println("\nSummary of cooccurrence results:")
@@ -68,7 +68,9 @@ function enriched_LRs(
     cooccur_res_df[!, :pair12] = string.(cooccur_res_df.sp1_name, "_", cooccur_res_df.sp2_name)
     cooccur_res_df[!, :pair21] = string.(cooccur_res_df.sp2_name, "_", cooccur_res_df.sp1_name)
 
+    # TODO: Given that co-occurrence matrix is symmetric, shouldn't we create pairs from both 
     all_cooccur_pairs = Set([cooccur_res_df.pair12; cooccur_res_df.pair21])
+    # all_cooccur_pairs = Set(cooccur_res_df.pair12)
     common_pairs = intersect(LR_pairs, all_cooccur_pairs)
 
     COI_enriched_LRs = DataFrame(from=String[], to=String[], correlation=Float64[], ligand_FC=Float64[], Receptor_FC=Float64[])
@@ -114,4 +116,55 @@ function enriched_LRs(
 
     Output_dict = Dict("enriched_LRs" => COI_enriched_LRs, "cooccurrence_table" => cooccur_COI_res)
     return Output_dict
+end
+
+
+"""
+Find LR (Ligand Receptor) pairs that are significantly co-occurring in one group and not in the other group.
+
+# Arguments
+- `group1_results`: Results from the EnrichedLRs function for Group 1.
+- `group2_results`: Results from the EnrichedLRs function for Group 2.
+- `group1_max_pval`: Maximum p-value threshold for significance levels of co-occurring LR pairs in Group 1.
+- `group2_min_pval`: Minimum p-value threshold for non-significance levels of co-occurring LR pairs in Group 2.
+
+# Returns
+List of LR pairs enriched in Group 1 and not in Group 2.
+
+# Example
+```julia
+result = find_differentially_cooccurring_LR_pairs(results_group1, results_group2, 0.05, 0.1)
+"""
+function find_differentially_cooccurring_LR_pairs(group1_results, group2_results, group1_max_pval, group2_min_pval)
+    cooc_results_group1 = group1_results["cooccurrence_table"].results
+    cooc_results_group2 = group2_results["cooccurrence_table"].results
+
+    enriched_LR_pairs_group1 = DataFrame(pair=String[], group1_pval=Real[], group2_pval=Real[], pval_difference=Real[], observed_cooc=Int[])
+
+    for row in eachrow(cooc_results_group1)
+        if row.pair12 in cooc_results_group2.pair12
+            group2_row = filter(r -> r.pair12 == row.pair12, cooc_results_group2)
+            group1_pval = row.p_gt
+            group2_pval = group2_row.p_gt[1]
+            group1_observed_cooc = row.obs_cooccur
+            group2_observed_cooc = group2_row.obs_cooccur[1]
+            group1_expected_cooc = row.exp_cooccur
+            group2_expected_cooc = group2_row.exp_cooccur[1]
+            pval_difference = group2_pval - group1_pval
+
+            if group1_pval < group1_max_pval && group2_pval > group2_min_pval &&
+               group1_observed_cooc > 10 &&
+               group1_observed_cooc != group1_expected_cooc && group2_observed_cooc != group2_expected_cooc &&
+               group2_observed_cooc < group1_observed_cooc
+                pair_data = DataFrame(pair=row.pair12, group1_pval=group1_pval, group2_pval=group2_pval,
+                    pval_difference=pval_difference, observed_cooc=group1_observed_cooc
+                )
+                append!(enriched_LR_pairs_group1, pair_data)
+            end
+        end
+    end
+
+    enriched_LR_pairs_group1_sorted = sort(enriched_LR_pairs_group1, :observed_cooc, rev=true)
+
+    return enriched_LR_pairs_group1_sorted
 end

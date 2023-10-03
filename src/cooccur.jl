@@ -137,7 +137,7 @@ function create_output_dataframe(incidence, N_matrix, obs_cooccur, prob_cooccur,
     output = DataFrame(sp1=Integer[], sp2=Integer[], sp1_inc=Integer[], sp2_inc=Integer[],
         obs_cooccur=Integer[], prob_cooccur=Real[], exp_cooccur=Real[], p_lt=Real[], p_gt=Real[])
 
-    @showprogress "Main Comp" for row in axis(obs_cooccur, 1)
+    @showprogress "Main Comp" for row in axes(obs_cooccur, 1)
         sp1 = obs_cooccur[row, 1]
         sp2 = obs_cooccur[row, 2]
         sp1_inc = convert(Integer, incidence[sp1, sp2])

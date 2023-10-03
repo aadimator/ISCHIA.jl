@@ -11,9 +11,8 @@ using Combinatorics
 using ProgressMeter
 
 export calculate_cooccurrence_stats,
-    enriched_LRs,
-    calculate_cooccurrence_stats_refactored,
-    enriched_LRs_refactored,
+    find_enriched_LR_pairs,
+    find_differentially_cooccurring_LR_pairs,
     CooccurOutput,
     summarize_cooccur
 
