@@ -20,7 +20,7 @@ A mutable struct representing the output of co-occurrence analysis.
 
 This mutable struct is used to encapsulate and organize the results of co-occurrence analysis.
 """
-@kwdef mutable struct CooccurOutput
+Base.@kwdef mutable struct CooccurOutput
     results::DataFrame
     positive::Int
     negative::Int
