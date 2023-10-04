@@ -16,6 +16,12 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Basic Usage" => "man/basics.md",
+        "API" => Any[
+            "Types" => "lib/types.md",
+            "Functions" => "lib/functions.md",
+            hide("Internals" => "lib/internals.md"),
+        ]
     ],
 )
 

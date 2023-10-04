@@ -6,9 +6,15 @@ CurrentModule = ISCHIA
 
 Documentation for [ISCHIA](https://github.com/aadimator/ISCHIA.jl).
 
-```@index
+```@contents
+Pages = ["man/basics.md",
+         "man/getting_started.md"]
+Depth = 2
 ```
 
-```@autodocs
-Modules = [ISCHIA]
+## Index
+
+```@index
+Pages = ["lib/types.md", "lib/functions.md"]
 ```
+
