@@ -17,6 +17,7 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Basic Usage" => "man/basics.md",
+        "Convert Seurat Objects" => "man/seurat_conversion.md",
         "API" => Any[
             "Types" => "lib/types.md",
             "Functions" => "lib/functions.md",
