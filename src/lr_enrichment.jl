@@ -21,7 +21,7 @@ A dictionary containing:
 function find_enriched_LR_pairs(
     adata::AnnData, COI::Vector{String}, Condition::Vector{String},
     LR_list::Vector{String}, LR_pairs::Vector{String},
-    exp_th::Real, corr_th::Real)
+    exp_th::Real, corr_th::Real; cc_column::String="CompositionCluster_CC")
 
     println("Preparing L-R presence/absence matrix")
 
@@ -38,7 +38,7 @@ function find_enriched_LR_pairs(
     LR_presence_absence = spatial_obj_exp_LR_subset_raw[LR_subset_raw_binary_mask_row, LR_subset_raw_binary_mask_col]
 
     # Filter spots based on COI and Condition
-    mask = (adata.obs[:, "CompositionCluster_CC"] .∈ Ref(COI)) .& (adata.obs[:, "orig.ident"] .∈ Ref(Condition))
+    mask = (adata.obs[:, cc_column] .∈ Ref(COI)) .& (adata.obs[:, "orig.ident"] .∈ Ref(Condition))
     COI_spots = adata.obs_names[mask]
     rest_of_spots = setdiff(adata.obs_names, COI_spots)
 
