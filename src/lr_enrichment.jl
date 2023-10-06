@@ -26,7 +26,7 @@ function find_enriched_LR_pairs(
     println("Preparing L-R presence/absence matrix")
 
     # Subset the expression matrix for the interested ligands and receptors
-    spatial_obj_exp_LR_subset_raw = adata[:, in.(adata.var.name, Ref(LR_list))]
+    spatial_obj_exp_LR_subset_raw = adata[:, LR_list]
 
     # Binarize the expression matrix based on the expression threshold
     spatial_obj_exp_LR_subset_raw_binary = spatial_obj_exp_LR_subset_raw.layers["counts"] .> exp_th
@@ -65,19 +65,16 @@ function find_enriched_LR_pairs(
 
     cooccur_res_df = cooccur_COI_res.results
     # Add a 'pair' column to the result DataFrame
-    cooccur_res_df[!, :pair12] = string.(cooccur_res_df.sp1_name, "_", cooccur_res_df.sp2_name)
-    cooccur_res_df[!, :pair21] = string.(cooccur_res_df.sp2_name, "_", cooccur_res_df.sp1_name)
+    cooccur_res_df[!, :pair] = string.(cooccur_res_df.sp1_name, "_", cooccur_res_df.sp2_name)
+    # cooccur_res_df[!, :pair21] = string.(cooccur_res_df.sp2_name, "_", cooccur_res_df.sp1_name)
 
     # TODO: Given that co-occurrence matrix is symmetric, shouldn't we create pairs from both 
-    all_cooccur_pairs = Set([cooccur_res_df.pair12; cooccur_res_df.pair21])
-    # all_cooccur_pairs = Set(cooccur_res_df.pair12)
+    # all_cooccur_pairs = Set([cooccur_res_df.pair; cooccur_res_df.pair21])
+    all_cooccur_pairs = Set(cooccur_res_df.pair)
     common_pairs = intersect(LR_pairs, all_cooccur_pairs)
 
     COI_enriched_LRs = DataFrame(from=String[], to=String[], correlation=Float64[], ligand_FC=Float64[], Receptor_FC=Float64[])
-    pair_count = 0
-    for pair in common_pairs
-        pair_count += 1
-        println("$pair_count / $(length(common_pairs))")
+    @showprogress "Calculate Significantly occurring pairs" for pair in common_pairs
 
         # Split the LR pair into individual ligand and receptor
         LR_pair_words = split(pair, "_")
@@ -95,7 +92,7 @@ function find_enriched_LR_pairs(
         Receptor_FC = round(Receptor_exp_COI_mean / Receptor_exp_otherspots_mean, digits=4)
 
         # Retrieve the p-value for the pair from the co-occurrence results DataFrame
-        pair_p = cooccur_res_df[(cooccur_res_df.pair12.==pair).|(cooccur_res_df.pair21.==pair), :p_gt][1]
+        pair_p = cooccur_res_df[cooccur_res_df.pair .== pair, :p_gt][1]
 
         # Find the indices of the ligand and receptor in the COI correlation matrix
         ligand_index = findfirst(==(LR_pair_ligand), COI_cors_adata.var_names)
@@ -142,8 +139,8 @@ function find_differentially_cooccurring_LR_pairs(group1_results, group2_results
     enriched_LR_pairs_group1 = DataFrame(pair=String[], group1_pval=Real[], group2_pval=Real[], pval_difference=Real[], observed_cooc=Int[])
 
     for row in eachrow(cooc_results_group1)
-        if row.pair12 in cooc_results_group2.pair12
-            group2_row = filter(r -> r.pair12 == row.pair12, cooc_results_group2)
+        if row.pair in cooc_results_group2.pair
+            group2_row = filter(r -> r.pair == row.pair, cooc_results_group2)
             group1_pval = row.p_gt
             group2_pval = group2_row.p_gt[1]
             group1_observed_cooc = row.obs_cooccur
@@ -156,7 +153,7 @@ function find_differentially_cooccurring_LR_pairs(group1_results, group2_results
                group1_observed_cooc > 10 &&
                group1_observed_cooc != group1_expected_cooc && group2_observed_cooc != group2_expected_cooc &&
                group2_observed_cooc < group1_observed_cooc
-                pair_data = DataFrame(pair=row.pair12, group1_pval=group1_pval, group2_pval=group2_pval,
+                pair_data = DataFrame(pair=row.pair, group1_pval=group1_pval, group2_pval=group2_pval,
                     pval_difference=pval_difference, observed_cooc=group1_observed_cooc
                 )
                 append!(enriched_LR_pairs_group1, pair_data)
