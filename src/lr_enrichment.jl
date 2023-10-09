@@ -132,15 +132,13 @@ List of LR pairs enriched in Group 1 and not in Group 2.
 ```julia
 result = find_differentially_cooccurring_LR_pairs(results_group1, results_group2, 0.05, 0.1)
 """
-function find_differentially_cooccurring_LR_pairs(group1_results, group2_results, group1_max_pval, group2_min_pval)
-    cooc_results_group1 = group1_results["cooccurrence_table"].results
-    cooc_results_group2 = group2_results["cooccurrence_table"].results
+function find_differentially_cooccurring_LR_pairs(cooc_df_1, cooc_df_2, group1_max_pval, group2_min_pval)
 
     enriched_LR_pairs_group1 = DataFrame(pair=String[], group1_pval=Real[], group2_pval=Real[], pval_difference=Real[], observed_cooc=Int[])
 
-    for row in eachrow(cooc_results_group1)
-        if row.pair in cooc_results_group2.pair
-            group2_row = filter(r -> r.pair == row.pair, cooc_results_group2)
+    @showprogress for row in eachrow(cooc_df_1)
+        if row.pair in cooc_df_2.pair
+            group2_row = filter(r -> r.pair == row.pair, cooc_df_2)
             group1_pval = row.p_gt
             group2_pval = group2_row.p_gt[1]
             group1_observed_cooc = row.obs_cooccur
