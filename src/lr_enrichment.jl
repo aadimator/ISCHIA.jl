@@ -59,9 +59,9 @@ function find_enriched_LR_pairs(
     println("\nSummary of cooccurrence results:")
     summarize_cooccur(cooccur_COI_res)
 
-    println("\nProbability table of cooccurrence results:")
+    # println("\nProbability table of cooccurrence results:")
     flush(stdout)
-    display(cooccur_COI_res.results)
+    # display(cooccur_COI_res.results)
 
     cooccur_res_df = cooccur_COI_res.results
     # Add a 'pair' column to the result DataFrame
