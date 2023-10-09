@@ -21,7 +21,7 @@ A dictionary containing:
 function find_enriched_LR_pairs(
     adata::AnnData, COI::Vector{String}, Condition::Vector{String},
     LR_list::Vector{String}, LR_pairs::Vector{String},
-    exp_th::Real, corr_th::Real; cc_column::String="CompositionCluster_CC")
+    exp_th::Real, corr_th::Real; cc_column::String="CompositionCluster_CC", condition_column::String="orig.ident")
 
     println("Preparing L-R presence/absence matrix")
 
@@ -38,7 +38,7 @@ function find_enriched_LR_pairs(
     LR_presence_absence = spatial_obj_exp_LR_subset_raw[LR_subset_raw_binary_mask_row, LR_subset_raw_binary_mask_col]
 
     # Filter spots based on COI and Condition
-    mask = (adata.obs[:, cc_column] .∈ Ref(COI)) .& (adata.obs[:, "orig.ident"] .∈ Ref(Condition))
+    mask = (adata.obs[:, cc_column] .∈ Ref(COI)) .& (adata.obs[:, condition_column] .∈ Ref(Condition))
     COI_spots = adata.obs_names[mask]
     rest_of_spots = setdiff(adata.obs_names, COI_spots)
 
@@ -66,12 +66,7 @@ function find_enriched_LR_pairs(
     cooccur_res_df = cooccur_COI_res.results
     # Add a 'pair' column to the result DataFrame
     cooccur_res_df[!, :pair] = string.(cooccur_res_df.sp1_name, "_", cooccur_res_df.sp2_name)
-    # cooccur_res_df[!, :pair21] = string.(cooccur_res_df.sp2_name, "_", cooccur_res_df.sp1_name)
-
-    # TODO: Given that co-occurrence matrix is symmetric, shouldn't we create pairs from both 
-    # all_cooccur_pairs = Set([cooccur_res_df.pair; cooccur_res_df.pair21])
-    all_cooccur_pairs = Set(cooccur_res_df.pair)
-    common_pairs = intersect(LR_pairs, all_cooccur_pairs)
+    common_pairs = intersect(LR_pairs, cooccur_res_df.pair)
 
     COI_enriched_LRs = DataFrame(from=String[], to=String[], correlation=Float64[], ligand_FC=Float64[], Receptor_FC=Float64[])
     @showprogress "Calculate Significantly occurring pairs" for pair in common_pairs
