@@ -58,7 +58,7 @@ A species by species matrix where the upper triangle contains N for each species
 
 # Calculate the co-occurrence matrix N
 # cooccurrence_matrix = create_N_matrix(species_matrix)
-
+```
 """
 function calculate_cooccurrence_matrix(mat::Matrix{Int})
     num_species = size(mat, 1)
