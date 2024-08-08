@@ -15,6 +15,5 @@ Depth = 2
 ## Index
 
 ```@index
-Pages = ["lib/types.md", "lib/functions.md"]
+Pages = ["library/types.md", "library/functions.md"]
 ```
-

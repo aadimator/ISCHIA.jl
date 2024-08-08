@@ -19,9 +19,9 @@ makedocs(;
         "Basic Usage" => "man/basics.md",
         "Convert Seurat Objects" => "man/seurat_conversion.md",
         "API" => Any[
-            "Types" => "lib/types.md",
-            "Functions" => "lib/functions.md",
-            hide("Internals" => "lib/internals.md"),
+            "Types" => "library/types.md",
+            "Functions" => "library/functions.md",
+            # hide("Internals" => "lib/internals.md"),
         ]
     ],
 )
