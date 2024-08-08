@@ -9,11 +9,6 @@ Calculate effect sizes for co-occurrence analysis results.
 
 # Returns
 Effect sizes as a data frame.
-
-# Example
-```julia
-effect_sizes(cooccur_object)
-```
 """
 function effect_sizes(cooccur; standardized=true)
     cooccur_results = cooccur[:results]
@@ -62,11 +57,6 @@ Summarize the results of a co-occurrence analysis.
 
 # Returns
 A summary of the co-occurrence analysis results as a dictionary.
-
-# Example
-```julia
-summary = summarize_cooccur(cooccur_object)
-```
 """
 function summarize_cooccur(cooccur::CooccurOutput)
     # Print basic analysis information
