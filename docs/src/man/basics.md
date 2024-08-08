@@ -61,7 +61,7 @@ using Combinatorics
 ## Load the Data
 
 ```@example ischia
-mdata = readh5mu(joinpath(pkgdir(ISCHIA), "docs", "src", "assets", "mudata.h5mu"))
+sdata = readh5ad(joinpath(pkgdir(ISCHIA), "docs", "src", "assets", "Spatial.h5ad"))
 lr_network = load(joinpath(pkgdir(ISCHIA), "docs", "src", "assets", "lr_network.rds"))
 size(lr_network)
 ```
@@ -69,8 +69,8 @@ size(lr_network)
 ## Filter LR Network
 
 ```@example ischia
-gene_names = mdata["Spatial"].var.name
-mdata["Spatial"].var_names = gene_names
+gene_names = sdata.var.name
+sdata.var_names = gene_names
 
 # Create LR_Pairs column
 lr_network[!, :LR_Pairs] = string.(lr_network.from, "_", lr_network.to);
@@ -94,7 +94,7 @@ length(all_combos)
 ## Calculate LR Enrchiment
 
 ```@example ischia
-spatial_object = mdata["Spatial"]
+spatial_object = sdata
 spatial_object.var_names = spatial_object.var.name
 Condition = unique(spatial_object.obs[!, "orig.ident"])
 LR_list = all_LR_genes_comm
