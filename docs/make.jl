@@ -21,7 +21,7 @@ makedocs(;
         "API" => Any[
             "Types" => "library/types.md",
             "Functions" => "library/functions.md",
-            # hide("Internals" => "lib/internals.md"),
+            hide("Internals" => "library/internals.md"),
         ]
     ],
 )
