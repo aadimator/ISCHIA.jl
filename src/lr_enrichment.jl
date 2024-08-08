@@ -122,11 +122,6 @@ Find LR (Ligand Receptor) pairs that are significantly co-occurring in one group
 
 # Returns
 List of LR pairs enriched in Group 1 and not in Group 2.
-
-# Example
-```julia
-result = find_differentially_cooccurring_LR_pairs(cooc_df_1, cooc_df_2, 0.05, 0.1)
-```
 """
 function find_differentially_cooccurring_LR_pairs(
 	cooc_df_1::DataFrame,
@@ -177,11 +172,6 @@ Find LR (Ligand Receptor) pairs that are significantly co-occurring in one group
 
 # Returns
 List of LR pairs enriched in Group 1 and not in Group 2.
-
-# Example
-```julia
-result = find_differentially_cooccurring_LR_pairs(group1_results, group2_results, 0.05, 0.1)
-```
 """
 function find_differentially_cooccurring_LR_pairs(
 	group1_results::Dict{String, Any},
